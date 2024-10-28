@@ -1,0 +1,5 @@
+Name	Mode	Score
+Nina	Hard	1
+all	Normal	0
+ALEX	Normal	0
+Alex	Hard	0

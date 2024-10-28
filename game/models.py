@@ -1,15 +1,7 @@
-"""Файл с описанием моделей"""
 import random
-from settings import PLAYER_LIVES, ALLOWED_ATTACKS, ATTACK_PAIRS_OUTCOME
-from exceptios import GameOver, EnemyDown
 
-
-def select_attack()->str:
-    while True:
-        choice = input("Choose your attack (1 - Paper, 2 - Stone, 3 - Scissors): ")
-        if choice in ALLOWED_ATTACKS:
-            return ALLOWED_ATTACKS[choice]
-        print("Invalid choice. Try again.")
+from game.exceptions import GameOver, EnemyDown
+from game.settings import PLAYER_LIVES, ALLOWED_ATTACKS, MODE_HARD, HARD_MODE_MULTIPLIER
 
 
 class Player:
@@ -18,25 +10,44 @@ class Player:
         self.lives = PLAYER_LIVES
         self.score = 0
 
+    @staticmethod
+    def select_attack():
+        """Player selects an attack option."""
+        while True:
+            choice = input("Choose your attack (1 - Paper, 2 - Stone, 3 - Scissors): ")
+            if choice in ALLOWED_ATTACKS:
+                return ALLOWED_ATTACKS[choice]
+            print("Invalid choice. Try again.")
+
     def decrease_lives(self):
+        """Decrease player's lives and check for game over."""
         self.lives -= 1
         if self.lives <= 0:
             raise GameOver(self.name)
 
     def add_score(self, points):
+        """Add score to the player."""
         self.score += points
 
 
-def select_attack():
-    return random.choice(list(ALLOWED_ATTACKS.values()))
-
-
 class Enemy:
-    def __init__(self, level, mode):
+
+    def __init__(self, level, difficulty):
+        """Инициализация противника"""
         self.level = level
-        self.lives = PLAYER_LIVES * mode * self.level
+        # Устанавливаем количество жизней в зависимости от уровня сложности
+        if difficulty == MODE_HARD:
+            self.lives = level * HARD_MODE_MULTIPLIER
+        else:
+            self.lives = level
+
+    @staticmethod
+    def select_attack():
+        """Enemy randomly selects an attack option."""
+        return random.choice(list(ALLOWED_ATTACKS.values()))
 
     def decrease_lives(self):
+        """Decrease enemy's lives and check for EnemyDown."""
         self.lives -= 1
         if self.lives <= 0:
             raise EnemyDown()

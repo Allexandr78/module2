@@ -1,8 +1,8 @@
-# game.py
-from models import  Enemy, select_attack
-from settings import  POINTS_FOR_FIGHT, POINTS_FOR_KILLING, ATTACK_PAIRS_OUTCOME
-from score import ScoreHandler
-from exceptios import GameOver, EnemyDown
+from game.exceptions import GameOver, EnemyDown
+from game.models import Enemy
+from game.score import ScoreHandler
+from game.settings import POINTS_FOR_KILLING, ATTACK_PAIRS_OUTCOME, POINTS_FOR_FIGHT, SCORE_FILE, WIN, LOSE, DRAW
+
 
 class Game:
     def __init__(self, player, mode):
@@ -12,10 +12,12 @@ class Game:
         self.create_enemy()
 
     def create_enemy(self):
-        level = self.enemy.level + 1 if hasattr(self, 'enemy') else 1
+        """Create a new enemy with an increased level."""
+        level = self.enemy.level + 1 if self.enemy is not None else 1
         self.enemy = Enemy(level, self.mode)
 
     def play(self):
+        """Play the game in a loop until GameOver or EnemyDown."""
         try:
             while True:
                 result = self.fight()
@@ -29,16 +31,26 @@ class Game:
             self.create_enemy()
 
     def fight(self):
+        """Execute one fight round between player and enemy."""
         player_attack = self.player.select_attack()
-        enemy_attack = select_attack()
+        enemy_attack = self.enemy.select_attack()
         return ATTACK_PAIRS_OUTCOME[(player_attack, enemy_attack)]
 
     def handle_fight_result(self, result):
-        if result == 1:
-            self.enemy.decrease_lives()
-            self.player.add_score(POINTS_FOR_FIGHT)
-        elif result == -1:
-            self.player.decrease_lives()
+        """Handles the result of each round."""
+        if result == WIN:
+            print("Вы выиграли этот ход!")
+            self.enemy.decrease_lives()  # Уменьшение жизней противника
+            self.player.add_score(POINTS_FOR_FIGHT)  # Добавление очков за победу в ходу
+        elif result == LOSE:
+            print("Вы проиграли этот ход!")
+            self.player.decrease_lives()  # Уменьшение жизней игрока
+        elif result == DRAW:
+            print("Ничья!")
 
     def save_score(self):
-        ScoreHandler("scores.txt").save(self.player)
+        """Сохранение очков после окончания игры"""
+        player_name = self.player.name
+        mode = self.mode  # должно быть 'Normal' или 'Hard'
+        score = self.player.score
+        ScoreHandler(SCORE_FILE).save(player_name, mode, score)
