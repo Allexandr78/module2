@@ -1,3 +1,5 @@
+"""Constants"""
+
 MODE_NORMAL = 'Normal'
 MODE_HARD = 'Hard'
 MODES = {'1': MODE_NORMAL,

@@ -1,34 +1,33 @@
+"""Main module."""
+
 from game.game import Game
 from game.models import Player
 from game.score import ScoreHandler
-from game.settings import MODE_NORMAL, MODE_HARD
+from game.settings import MODES
 
 
-def create_player():
-    """Создает объект игрока и выбирает сложность"""
-    player_name = input("Введите ваше имя: ")
-    difficulty_choice = input("Выберите уровень сложности: 1 - Normal, 2 - Hard: ")
-    if difficulty_choice == '1':
-        mode = MODE_NORMAL
-    elif difficulty_choice == '2':
-        mode = MODE_HARD
-    else:
-        print("Неверный выбор, установлен режим по умолчанию: Normal")
-        mode = MODE_NORMAL
-    return Player(player_name), mode
-
-
-def play_game():
-    player, mode = create_player()
-    game = Game(player, mode)
+def play_game() -> None:
+    """Play game"""
+    name = input("Enter your name: ")
+    mode = input("Choose difficulty (1 for Normal, 2 for Hard): ")
+    player = Player(name)
+    game = Game(player, MODES[mode])
     game.play()
 
 
-def show_scores():
+def show_scores() -> None:
+    """Displays scores"""
     ScoreHandler().display()
 
 
-def main():
+def exit_game() -> None:
+    """Exits the game"""
+    print("Exiting game.")
+    exit()
+
+
+def main() -> None:
+    """Main menu"""
     while True:
         print("1. Start Game")
         print("2. Show Scores")
@@ -40,8 +39,7 @@ def main():
         elif choice == "2":
             show_scores()
         elif choice == "3":
-            print("Goodbye!")
-            break
+            exit_game()
         else:
             print("Invalid option, please try again.")
 
