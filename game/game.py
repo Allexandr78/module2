@@ -45,6 +45,7 @@ class Game:
     def handle_fight_result(self, result) -> None:
         """Handles the result of each round."""
         if result == WIN:
+            print("You WIN this move!")
             self.player.add_score(POINTS_FOR_FIGHT)
             self.enemy.decrease_lives()
         elif result == LOSE:

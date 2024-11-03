@@ -1,4 +1,2 @@
-All	Normal	1
-Alexandr	Hard	0
-Alex	Normal	1
-Nina	Hard	1
+Alexandr	Hard	2
+All	Hard	2
